@@ -12,7 +12,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 export const metadata = {
   title: 'Distribuidora Super Carabobo | Lubricantes de Alta Calidad en valencia - Venezuela',
   description: 'Distribución al mayor de aceites y lubricantes para vehiculos en Valencia Carabobo. Calidad Proxil para tu vehículo.',

@@ -42,14 +42,14 @@ export async function middleware(request) {
   // 2. LÓGICA DE LOGIN (Aquí es donde evitamos consultas infinitas)
   if (user && pathname === '/login') {
     // En lugar de consultar la DB cada vez, miramos los metadatos que guardamos al registrar
-    const role = user.user_metadata?.role || 'vendedor'
+    const role = user.user_metadata?.rol
     const target = role === 'admin' ? '/dashboard/admin' : '/dashboard/vendedor'
     return NextResponse.redirect(new URL(target, request.url))
   }
 
   // 3. SEGURIDAD CRUZADA (Evitar que un vendedor entre a rutas de admin)
   if (user && pathname.startsWith('/dashboard/admin')) {
-    const role = user.user_metadata?.role
+    const role = user.user_metadata?.rol
     if (role !== 'admin') {
       return NextResponse.redirect(new URL('/dashboard/vendedor', request.url))
     }
