@@ -12,11 +12,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+
 export const metadata = {
-  title: "Royal Venezuela | Royal Super Oil",
-  description: "Distribuidor Oficial Royal Super Oil Valencia Venezuela",
-  keywords: ["lubricantes", "royal", "super", "oil", "royal super oil", "aceites", "venezuela"],
-};
+  title: 'Distribuidora Super Carabobo | Lubricantes de Alta Calidad en valencia - Venezuela',
+  description: 'Distribución al mayor de aceites y lubricantes para vehiculos en Valencia Carabobo. Calidad Proxil para tu vehículo.',
+  keywords: ['lubricantes venezuela', 'aceite para motor valencia', 'royal super oil', 'proxil', 'Royal super carabobo', 'distribuidor de lubricantes', 'lubricantes para vehículos', 'aceites de alta calidad', 'lubricantes automotrices', 'valencia carabobo'],
+  openGraph: {
+    title: 'Royal Super Oil - Potencia y Protección',
+    description: 'Expertos en lubricación automotriz.',
+    images: ['/logo-royal.png'],
+  },
+}
 
 // src/app/layout.js
 export default function RootLayout({ children }) {
