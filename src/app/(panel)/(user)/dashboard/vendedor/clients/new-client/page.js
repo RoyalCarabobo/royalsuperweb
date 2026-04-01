@@ -180,8 +180,6 @@ export default function NewClientPage() {
                                     />
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
                             <button type="submit" disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98]">
                                 {loading ? 'REGISTRANDO...' : 'REGISTRAR CLIENTE'}
