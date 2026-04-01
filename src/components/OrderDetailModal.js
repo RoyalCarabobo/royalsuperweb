@@ -1,8 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { X, Ban, Truck, CreditCard, Package, Printer, ExternalLink, CheckCircle, Clock } from 'lucide-react';
-import Link from 'next/link';
 
 export default function OrderDetailModal({
   isOpen,
@@ -10,7 +8,7 @@ export default function OrderDetailModal({
   onClose,
   onAnular,
   onAprobar,
-  userRole,
+  userRole, // Asegúrate de pasar 'admin' o 'vendedor' desde el padre
   onDespachar,
   onEntregar,
   onReportarPago,
@@ -18,29 +16,34 @@ export default function OrderDetailModal({
 }) {
   const [isClient, setIsClient] = useState(false);
 
-  const isAdmin = userRole === 'admin'
-
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   if (!isOpen || !order) return null;
 
-  // Normalización de estatus
-  const logistica = order.status_logistico?.toLowerCase().trim() || 'pendiente';
-  const pago = order.status_pago?.toLowerCase().trim() || 'por cobrar';
+  // --- NORMALIZACIÓN ROBUSTA DE DATOS ---
+  // Convertimos a string, minúsculas y quitamos espacios para evitar errores de comparación
+  const logistica = String(order.status_logistico || '').toLowerCase().trim() || 'pendiente';
+  const pago = String(order.status_pago || '').toLowerCase().trim() || 'por cobrar';
+  const roleClean = String(userRole || '').toLowerCase().trim();
 
-  // Lógica de Visibilidad de Botones (FLUJO SECUENCIAL)
+  // Verificación de Rol
+  const isAdmin = roleClean === 'admin';
+
+  // Lógica de Estados (Secuencial)
   const esPendiente = logistica === 'pendiente';
   const esAprobado = logistica === 'aprobado';
   const esDespachado = logistica === 'despachado';
   const esEntregado = logistica === 'entregado';
 
   const esPagado = pago === 'pagado';
-  const esAnulado = pago === 'anulado';
+  const esAnulado = pago === 'anulado' || logistica === 'anulado';
 
-  // Acciones disponibles según el estado actual
+  // --- LÓGICA DE VISIBILIDAD DE BOTONES ---
+  // El botón de aprobar SÓLO aparece si es pendiente Y el usuario es admin
   const mostrarBotonAprobar = esPendiente && isAdmin;
+  
   const mostrarBotonDespachar = esAprobado;
   const mostrarBotonEntregar = esDespachado;
   const mostrarBotonAnular = (esPendiente || esAprobado) && !esAnulado;
@@ -61,18 +64,18 @@ export default function OrderDetailModal({
         <div className="p-6 md:p-8 border-b border-[#eae7e7] flex justify-between items-start bg-white">
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
-              {/* Badge Logístico Dinámico */}
-              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full ${esEntregado ? 'bg-green-600 text-white' :
+              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full ${
+                  esEntregado ? 'bg-green-600 text-white' :
                   esDespachado ? 'bg-blue-600 text-white' :
-                    esAprobado ? 'bg-purple-600 text-white' :
-                      'bg-[#ffd80d] text-[#715e00]'
+                  esAprobado ? 'bg-purple-600 text-white' :
+                  'bg-[#ffd80d] text-[#715e00]'
                 }`}>
                 {logistica}
               </span>
-              {/* Badge de Pago */}
-              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full border ${esPagado ? 'bg-green-50 border-green-200 text-green-700' :
+              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full border ${
+                  esPagado ? 'bg-green-50 border-green-200 text-green-700' :
                   esAnulado ? 'bg-red-50 border-red-200 text-red-700' :
-                    'bg-amber-50 border-amber-200 text-amber-700'
+                  'bg-amber-50 border-amber-200 text-amber-700'
                 }`}>
                 PAGO: {pago}
               </span>
@@ -89,7 +92,6 @@ export default function OrderDetailModal({
 
         {/* Content */}
         <div className="p-6 md:p-8 overflow-y-auto flex-1">
-          {/* Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="p-5 bg-white border border-gray-100 rounded-2xl shadow-sm">
               <div className="flex items-center gap-2 mb-3 text-[#6f5d00]">
@@ -108,7 +110,6 @@ export default function OrderDetailModal({
             </div>
           </div>
 
-          {/* Tabla de Productos */}
           <div className="mb-8">
             <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#4d4732] mb-4 flex items-center gap-2">
               <Package size={14} className="text-[#6f5d00]" /> Detalle de Carga
@@ -124,8 +125,8 @@ export default function OrderDetailModal({
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {order.items?.map((item, id) => (
-                    <tr key={id} className="border-b border-gray-50 last:border-0">
+                  {order.items?.map((item, idx) => (
+                    <tr key={idx} className="border-b border-gray-50 last:border-0">
                       <td className="p-4 font-black uppercase italic text-xs text-gray-700">{item.productos?.nombre}</td>
                       <td className="p-4 text-center font-bold text-gray-600">{item.cantidad}</td>
                       <td className="p-4 text-right font-mono text-gray-500">${(item.precio_unitario || 0).toFixed(2)}</td>
@@ -140,10 +141,9 @@ export default function OrderDetailModal({
           </div>
         </div>
 
-        {/* Footer de Acciones (Botones Inteligentes) */}
+        {/* Footer de Acciones */}
         <div className="p-6 md:p-8 bg-white border-t border-gray-100 flex flex-col gap-3">
-
-          {/* Acción Principal de Impresión */}
+          
           <button
             onClick={handlePrint}
             className="w-full bg-[#1c1b1b] text-[#ffd80d] font-black uppercase text-[10px] tracking-widest py-4 rounded-xl flex items-center justify-center gap-3 hover:scale-[1.01] transition-all shadow-lg active:scale-95"
@@ -152,18 +152,17 @@ export default function OrderDetailModal({
           </button>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
-
-            {/* BOTÓN APROBAR (Solo en admin) */}
+            
+            {/* BOTÓN APROBAR (Corregido) */}
             {mostrarBotonAprobar && (
-            <button
-              onClick={() => { if (confirm('¿Aprobar este pedido ?')) onAprobar(order.id); }}
-              className="flex-1 px-4 py-4 bg-green-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-purple-700 transition-all"
-            >
-              <CheckCircle size={18} /> Aprobar Pedido
-            </button>
+              <button
+                onClick={() => { if (confirm('¿Desea aprobar este pedido para despacho?')) onAprobar(order.id); }}
+                className="flex-1 px-4 py-4 bg-purple-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-purple-700 transition-all"
+              >
+                <CheckCircle size={18} /> Aprobar Pedido
+              </button>
             )}
 
-            {/* BOTÓN ANULAR (Solo en estados iniciales) */}
             {mostrarBotonAnular && (
               <button
                 onClick={() => { if (confirm('¿Anular pedido definitivamente?')) onAnular(order.id); }}
@@ -173,7 +172,6 @@ export default function OrderDetailModal({
               </button>
             )}
 
-            {/* BOTÓN DESPACHAR (Solo si está aprobado) */}
             {mostrarBotonDespachar && (
               <button
                 onClick={() => { if (confirm('¿Confirmar salida del camión?')) onDespachar(order.id); }}
@@ -183,27 +181,24 @@ export default function OrderDetailModal({
               </button>
             )}
 
-            {/* BOTÓN ENTREGAR (Solo si fue despachado) */}
             {mostrarBotonEntregar && (
               <button
-                onClick={() => { if (confirm('¿Confirmar que el cliente recibió la mercancía?')) onEntregar(order.id); }}
+                onClick={() => { if (confirm('¿Confirmar entrega al cliente?')) onEntregar(order.id); }}
                 className="flex-[2] px-4 py-4 bg-green-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-green-700 transition-all"
               >
                 <CheckCircle size={18} /> Confirmar Entrega
               </button>
             )}
 
-            {/* BOTÓN REGISTRAR PAGO (Solo si ya fue entregado) */}
             {mostrarBotonPago && (
               <button
                 onClick={() => { onReportarPago(order); onClose(); }}
-                className="flex-[2] px-4 py-4 bg-[#6f5d00] text-[#ffd80d] font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 animate-pulse hover:animate-none transition-all shadow-xl shadow-yellow-900/20"
+                className="flex-[2] px-4 py-4 bg-[#6f5d00] text-[#ffd80d] font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 animate-pulse hover:animate-none transition-all shadow-xl"
               >
                 <CreditCard size={18} /> Registrar Pago
               </button>
             )}
 
-            {/* Botón Cerrar (Siempre visible o si no hay acciones) */}
             <button
               onClick={onClose}
               className="flex-1 px-4 py-4 bg-gray-100 text-gray-500 font-black uppercase tracking-widest text-[9px] rounded-xl hover:bg-gray-200 transition-colors"
