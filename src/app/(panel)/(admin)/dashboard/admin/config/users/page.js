@@ -4,7 +4,7 @@ import { UserService } from '@/services/profiles';
 import Link from 'next/link';
 
 export default function UserManagementPage() {
-  const [profile, setUsers] = useState([]); // 'profile' es tu estado local de la tabla profiles
+  const [usuarios, setUsers] = useState([]); // 'usuarios' es tu estado local de la tabla profiles
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -29,10 +29,10 @@ export default function UserManagementPage() {
   // 2. Toggle con actualización optimista (cambia en pantalla antes que en DB)
   const handlePermissionToggle = async (userId, currentStatus) => {
     // Guardamos el estado anterior por si falla la DB
-    const previousUsers = [...perfile];
+    const previousUsers = [...usuarios];
 
     // Actualización rápida en UI
-    setUsers(perfile.map(u =>
+    setUsers(usuarios.map(u =>
       u.id === userId ? { ...u, can_create_customers: !currentStatus } : u
     ));
 
@@ -46,9 +46,9 @@ export default function UserManagementPage() {
   };
 
   // 3. Filtro inteligente (Busca por nombre o correo)
-  const filteredUsers = perfile.filter(u =>
+  const filteredUsers = usuarios.filter(u =>
     u.nombre_completo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.correo?.toLowerCase().includes(searchTerm.toLowerCase())
+    u.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-4 lg:p-10">
@@ -107,7 +107,7 @@ export default function UserManagementPage() {
                         <div className="flex items-center gap-4">
                           <div className="size-12 rounded-full bg-gradient-to-br from-blue-600 to-red-600 p-[2px]">
                             <div className="w-full h-full bg-black rounded-full flex items-center justify-center font-black text-sm uppercase italic">
-                              {user.full_name?.substring(0, 2) || 'RS'}
+                              {user.nombre_completo?.substring(0, 2) || 'RS'}
                             </div>
                           </div>
                           <div>
@@ -117,9 +117,9 @@ export default function UserManagementPage() {
                         </div>
                       </td>
                       <td className="p-6">
-                        <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase italic border ${user.role === 'admin' ? 'bg-red-600/10 text-red-500 border-red-600/20' : 'bg-blue-600/10 text-blue-500 border-blue-600/20'
+                        <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase italic border ${user.rol === 'admin' ? 'bg-red-600/10 text-red-500 border-red-600/20' : 'bg-blue-600/10 text-blue-500 border-blue-600/20'
                           }`}>
-                          {user.role}
+                          {user.rol}
                         </span>
                       </td>
                       <td className="p-6 text-center">
