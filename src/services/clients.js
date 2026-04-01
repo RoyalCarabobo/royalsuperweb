@@ -110,6 +110,7 @@ export const ClientService = {
             })
             .eq('id', id)
             .select()
+            .maybeSingle()
             
 
         if (error) throw error;
