@@ -29,10 +29,10 @@ export default function UserManagementPage() {
   // 2. Toggle con actualización optimista (cambia en pantalla antes que en DB)
   const handlePermissionToggle = async (userId, currentStatus) => {
     // Guardamos el estado anterior por si falla la DB
-    const previousUsers = [...profile];
+    const previousUsers = [...usuarios];
 
     // Actualización rápida en UI
-    setUsers(profile.map(u =>
+    setUsers(usuarios.map(u =>
       u.id === userId ? { ...u, can_create_customers: !currentStatus } : u
     ));
 
@@ -46,9 +46,9 @@ export default function UserManagementPage() {
   };
 
   // 3. Filtro inteligente (Busca por nombre o correo)
-  const filteredUsers = profile.filter(u =>
-    u.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = usuarios.filter(u =>
+    u.nombre_completo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    u.correo?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white p-4 lg:p-10">
@@ -111,8 +111,8 @@ export default function UserManagementPage() {
                             </div>
                           </div>
                           <div>
-                            <div className="font-bold text-white group-hover:text-blue-400 transition-colors">{user.full_name || 'Sin Nombre'}</div>
-                            <div className="text-xs text-gray-500 font-medium">{user.email}</div>
+                            <div className="font-bold text-white group-hover:text-blue-400 transition-colors">{user.nombre_completo || 'Sin Nombre'}</div>
+                            <div className="text-xs text-gray-500 font-medium">{user.correo}</div>
                           </div>
                         </div>
                       </td>
