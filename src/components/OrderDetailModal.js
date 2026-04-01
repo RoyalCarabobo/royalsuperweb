@@ -9,13 +9,17 @@ export default function OrderDetailModal({
   order,
   onClose,
   onAnular,
+  onAprobar,
+  userRole,
   onDespachar,
-  onEntregar, 
+  onEntregar,
   onReportarPago,
   onPrintRequest,
 }) {
   const [isClient, setIsClient] = useState(false);
-  
+
+  const isAdmin = userRole === 'admin'
+
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -31,12 +35,13 @@ export default function OrderDetailModal({
   const esAprobado = logistica === 'aprobado';
   const esDespachado = logistica === 'despachado';
   const esEntregado = logistica === 'entregado';
-  
+
   const esPagado = pago === 'pagado';
   const esAnulado = pago === 'anulado';
 
   // Acciones disponibles según el estado actual
-  const mostrarBotonDespachar = esAprobado; 
+  const mostrarBotonAprobar = esPendiente && isAdmin;
+  const mostrarBotonDespachar = esAprobado;
   const mostrarBotonEntregar = esDespachado;
   const mostrarBotonAnular = (esPendiente || esAprobado) && !esAnulado;
   const mostrarBotonPago = esEntregado && !esPagado;
@@ -51,26 +56,24 @@ export default function OrderDetailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
       <div className="bg-[#fcf9f8] w-full max-w-4xl max-h-[95vh] overflow-hidden relative shadow-2xl border border-[#d0c6ab]/20 flex flex-col rounded-xl">
-        
+
         {/* Header */}
         <div className="p-6 md:p-8 border-b border-[#eae7e7] flex justify-between items-start bg-white">
           <div>
             <div className="flex flex-wrap items-center gap-3 mb-2">
               {/* Badge Logístico Dinámico */}
-              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full ${
-                esEntregado ? 'bg-green-600 text-white' : 
-                esDespachado ? 'bg-blue-600 text-white' : 
-                esAprobado ? 'bg-purple-600 text-white' : 
-                'bg-[#ffd80d] text-[#715e00]'
-              }`}>
+              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full ${esEntregado ? 'bg-green-600 text-white' :
+                  esDespachado ? 'bg-blue-600 text-white' :
+                    esAprobado ? 'bg-purple-600 text-white' :
+                      'bg-[#ffd80d] text-[#715e00]'
+                }`}>
                 {logistica}
               </span>
               {/* Badge de Pago */}
-              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full border ${
-                esPagado ? 'bg-green-50 border-green-200 text-green-700' : 
-                esAnulado ? 'bg-red-50 border-red-200 text-red-700' : 
-                'bg-amber-50 border-amber-200 text-amber-700'
-              }`}>
+              <span className={`px-3 py-1 text-[10px] font-black tracking-widest uppercase rounded-full border ${esPagado ? 'bg-green-50 border-green-200 text-green-700' :
+                  esAnulado ? 'bg-red-50 border-red-200 text-red-700' :
+                    'bg-amber-50 border-amber-200 text-amber-700'
+                }`}>
                 PAGO: {pago}
               </span>
             </div>
@@ -96,7 +99,7 @@ export default function OrderDetailModal({
               <h4 className="text-lg font-black text-[#1c1b1b] uppercase italic">{order.clientes?.razon_social || 'N/A'}</h4>
               <p className="text-xs font-bold text-gray-400 mt-1 font-mono">{order.clientes?.rif}</p>
             </div>
-            
+
             <div className="p-5 bg-white border border-gray-100 rounded-2xl shadow-sm flex flex-col justify-center items-end text-right">
               <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Monto de Operación</p>
               <h4 className="text-3xl font-black text-[#1c1b1b] italic">
@@ -121,8 +124,8 @@ export default function OrderDetailModal({
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {order.items?.map((item, idx) => (
-                    <tr key={idx} className="border-b border-gray-50 last:border-0">
+                  {order.items?.map((item, id) => (
+                    <tr key={id} className="border-b border-gray-50 last:border-0">
                       <td className="p-4 font-black uppercase italic text-xs text-gray-700">{item.productos?.nombre}</td>
                       <td className="p-4 text-center font-bold text-gray-600">{item.cantidad}</td>
                       <td className="p-4 text-right font-mono text-gray-500">${(item.precio_unitario || 0).toFixed(2)}</td>
@@ -139,7 +142,7 @@ export default function OrderDetailModal({
 
         {/* Footer de Acciones (Botones Inteligentes) */}
         <div className="p-6 md:p-8 bg-white border-t border-gray-100 flex flex-col gap-3">
-          
+
           {/* Acción Principal de Impresión */}
           <button
             onClick={handlePrint}
@@ -149,7 +152,17 @@ export default function OrderDetailModal({
           </button>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-2">
-            
+
+            {/* BOTÓN APROBAR (Solo en admin) */}
+            {mostrarBotonAprobar && (
+            <button
+              onClick={() => { if (confirm('¿Aprobar este pedido ?')) onAprobar(order.id); }}
+              className="flex-1 px-4 py-4 bg-green-600 text-white font-black uppercase tracking-widest text-[10px] rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-purple-700 transition-all"
+            >
+              <CheckCircle size={18} /> Aprobar Pedido
+            </button>
+            )}
+
             {/* BOTÓN ANULAR (Solo en estados iniciales) */}
             {mostrarBotonAnular && (
               <button
