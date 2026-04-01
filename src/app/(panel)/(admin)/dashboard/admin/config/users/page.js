@@ -29,10 +29,10 @@ export default function UserManagementPage() {
   // 2. Toggle con actualización optimista (cambia en pantalla antes que en DB)
   const handlePermissionToggle = async (userId, currentStatus) => {
     // Guardamos el estado anterior por si falla la DB
-    const previousUsers = [...usuarios];
+    const previousUsers = [...perfile];
 
     // Actualización rápida en UI
-    setUsers(usuarios.map(u =>
+    setUsers(perfile.map(u =>
       u.id === userId ? { ...u, can_create_customers: !currentStatus } : u
     ));
 
@@ -46,7 +46,7 @@ export default function UserManagementPage() {
   };
 
   // 3. Filtro inteligente (Busca por nombre o correo)
-  const filteredUsers = usuarios.filter(u =>
+  const filteredUsers = perfile.filter(u =>
     u.nombre_completo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.correo?.toLowerCase().includes(searchTerm.toLowerCase())
   );
