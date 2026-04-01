@@ -22,11 +22,13 @@ export default function RegisterPage() {
       email, 
       password, 
       options: { 
-        data: { 
+         data: { 
           role: role,
           full_name: fullName,
-          phone: phone,
-          email: email
+          nombre_completo: fullName, 
+          telefono: phone,
+          correo: email,
+          rol:role
         } 
       } 
     })
