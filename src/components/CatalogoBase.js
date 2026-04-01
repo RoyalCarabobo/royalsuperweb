@@ -17,7 +17,7 @@ export default function CatalogoBase({ productos = [], isLoading, showPrivateDat
     { id: 'refrigerantes', label: 'refrigerantes' },
     { id: 'fuera borda', label: 'Fuera Borda' },
     { id: 'gasolina', label: 'Gasolina' },
-    { id: 'hidraulico', label: 'Hidraulico},
+    { id: 'hidraulico', label: 'Hidraulico'},
     { id: 'motocicleta', label: 'Moto' },  
     { id: 'valvulina', label: 'Valvulina' }
   ];
