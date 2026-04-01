@@ -27,7 +27,7 @@ export default function UserClientsPage() {
 
     // Filtro corregido para usar 'business_name' y 'rif'
     const filteredClients = clients.filter(c =>
-        c.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.razon_social?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.rif?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
