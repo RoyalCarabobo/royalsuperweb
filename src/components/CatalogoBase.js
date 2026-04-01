@@ -11,11 +11,14 @@ export default function CatalogoBase({ productos = [], isLoading, showPrivateDat
 
   const categorias = [
     { id: 'todos', label: 'Todos' },
+    { id: 'atf', label: 'ATF' },
     { id: 'diesel', label: 'Diesel' },
-    { id: 'gasolina', label: 'Gasolina' },
-    { id: 'motocicleta', label: 'Moto' },
     { id: 'frenos', label: 'Frenos' },
-    { id: 'refrigerantes', label: 'Coolant' },
+    { id: 'refrigerantes', label: 'refrigerantes' },
+    { id: 'fuera borda', label: 'Fuera Borda' },
+    { id: 'gasolina', label: 'Gasolina' },
+    { id: 'hidraulico', label: 'Hidraulico},
+    { id: 'motocicleta', label: 'Moto' },  
     { id: 'valvulina', label: 'Valvulina' }
   ];
 
