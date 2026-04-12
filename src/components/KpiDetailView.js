@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { ArrowLeft, CheckCircle, Eye } from 'lucide-react';
 import OrderDetailModal from '@/components/OrderDetailModal';
 import { createClient } from '@/utils/supabase/client';
+import { OrderService } from '@/services/orders';
 
 
 export default function KpiDetailView({ type, data = [],
@@ -24,7 +25,7 @@ export default function KpiDetailView({ type, data = [],
       if (user) {
         // Asumiendo que guardas el rol en la tabla 'perfiles' o en user_metadata
         const { data } = await supabase
-          .from('perfiles')
+          .from('usuarios')
           .select('rol')
           .eq('id', user.id)
           .single();
@@ -33,6 +34,31 @@ export default function KpiDetailView({ type, data = [],
     };
     getUser();
   }, []);
+
+  const handleAnularPedido = async (orderId) => {
+    try {
+      // Confirmación visual antes de proceder
+      const confirmar = confirm("¿Estás seguro de anular este pedido Royal? El stock se devolverá al inventario automáticamente.");
+      if (!confirmar) return;
+
+      // Llamamos al servicio (aquí es donde verás los console.log que pusimos antes)
+      const result = await OrderService.deleteOrder(orderId);
+
+      if (result.success) {
+        alert("✅ Pedido anulado y stock reintegrado correctamente.");
+
+        // Refrescamos la lista de la consola para que el pedido desaparezca o cambie de estado
+        if (onRefresh) onRefresh();
+
+        // Cerramos el modal
+        setIsModalOpen(false);
+        setSelectedOrder(null);
+      }
+    } catch (error) {
+      console.error("Error al anular:", error);
+      alert("❌ Error en Red Royal: " + error.message);
+    }
+  };
 
   const handleDespachar = async (orderId) => {
     try {
@@ -104,7 +130,7 @@ export default function KpiDetailView({ type, data = [],
         if (o.status_pago === 'pagado') return false;
 
         const fechaBase = o.fecha_vencimiento ? new Date(o.fecha_vencimiento) : null;
-        
+
         if (!fechaBase) {
           const calculada = new Date(o.fecha_pedido);
           calculada.setDate(calculada.getDate() + (o.dias_credito || 0));
@@ -131,7 +157,9 @@ export default function KpiDetailView({ type, data = [],
       alert("Error: " + error.message);
     } else {
       alert("¡Pedido Royal Aprobado!");
-      onRefresh();
+      if (onRefresh) onRefresh();
+      setIsModalOpen(false); // <--- Cerramos el modal tras aprobar
+      setSelectedOrder(null);
     }
   };
 
@@ -254,11 +282,13 @@ export default function KpiDetailView({ type, data = [],
         isOpen={isModalOpen}
         order={selectedOrder}
         onClose={() => setIsModalOpen(false)}
-        onAnular={onAnular}
+        onAnular={handleAnularPedido}
         onEntregar={handleEntregarPedido}
         onDespachar={handleDespachar}
         onReportarPago={handleReportarPago}
         onPrintRequest={onPrintRequest}
+        onAprobar={handleAprobar}
+        userRole={userRole}
 
       />
     </div >

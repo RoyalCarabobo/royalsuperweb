@@ -14,7 +14,7 @@ export default function Home() {
       <section className='mt-8 mb-12 px-4 w-full max-w-7xl text-center md:text-left'>
         <h1 className='text-4xl md:text-6xl font-black tracking-tighter uppercase italic text-gray-900 leading-none'>
           <span className='block text-sm md:text-base font-bold tracking-[0.3em] text-gray-500 italic mb-2'>
-            Lubricantes de Alto Rendimiento
+            Distribuidora Super Carabobo
           </span>
           Royal <span className='text-primary'>Super Oil</span>
           <span className='block md:inline-block md:ml-4 text-2xl md:text-4xl text-gray-400 font-light not-italic tracking-normal'>

@@ -140,14 +140,15 @@ export default function NuevoProductoPage() {
                           onChange={(e) => setForm({ ...form, categoria: e.target.value })}
                         >
                           <option value="">Seleccionar...</option>
+                          <option value="atf">ATF</option>
                           <option value="diesel">Diesel</option>
-                          <option value="gasolina">Gasolina</option>
-                          <option value="motocicleta">Motocicleta</option>
-                          <option value="fuera borda">Fuera Borda</option>
-                          <option value="hidraulico">Hidraulico</option>
-                          <option value="valvulina">Valvulina</option>
                           <option value="frenos">Frenos</option>
                           <option value="refrigerantes">Refrigerantes</option>
+                          <option value="fuera borda">Fuera Borda</option>
+                          <option value="gasolina">Gasolina</option>
+                          <option value="hidraulico">Hidraulico</option>
+                          <option value="motocicleta">Motocicleta</option>
+                          <option value="valvulina">Valvulina</option>
                         </select>
                       </div>
                     </div>

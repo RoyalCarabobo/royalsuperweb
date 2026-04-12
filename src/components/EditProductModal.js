@@ -162,14 +162,15 @@ export default function EditProductModal({ product, isOpen, onClose, onUpdate })
                                 value={formData.categoria}
                                 onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
                             >
-                                <option value="diesel">Diesel</option>
-                                <option value="gasolina">Gasolina</option>
-                                <option value="motocicleta">Motocicleta</option>
-                                <option value="fuera borda">Fuera Borda</option>
-                                <option value="hidraulico">Hidráulico</option>
-                                <option value="valvulina">Valvulina</option>
-                                <option value="frenos">Frenos</option>
-                                <option value="refrigerantes">Refrigerantes</option>
+                              <option value="atf">ATF</option>
+                              <option value="diesel">Diesel</option>
+                              <option value="frenos">Frenos</option>
+                              <option value="refrigerantes">Refrigerantes</option>
+                              <option value="fuera borda">Fuera Borda</option>
+                              <option value="gasolina">Gasolina</option>
+                              <option value="hidraulico">Hidraulico</option>
+                              <option value="motocicleta">Motocicleta</option>
+                              <option value="valvulina">Valvulina</option>
                             </select>
                         </div>
                     </div>

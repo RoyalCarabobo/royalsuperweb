@@ -78,13 +78,13 @@ export default function InventarioPage() {
                                     <td className="px-6 py-4">
                                         <img
                                             src={p.foto_producto_url || 'https://via.placeholder.com/80'}
-                                            alt={p.name}
+                                            alt={p.nombre}
                                             className="size-14 rounded-lg object-cover border border-[#e8cece]"
                                         />
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex flex-col">
-                                            <span className="font-bold text-[#1c0d0d]">{p.name}</span>
+                                            <span className="font-bold text-[#1c0d0d]">{p.nombre}</span>
                                             <span className="text-xs text-[#9c4949] truncate max-w-[200px]">{p.descripcion}</span>
                                         </div>
                                     </td>

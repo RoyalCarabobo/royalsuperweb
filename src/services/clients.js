@@ -110,7 +110,8 @@ export const ClientService = {
             })
             .eq('id', id)
             .select()
-            .single();
+            .maybeSingle()
+            
 
         if (error) throw error;
         return data;

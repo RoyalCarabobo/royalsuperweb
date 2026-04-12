@@ -104,7 +104,7 @@ export default function Carrusel() {
                                             src={item.foto_producto_url || "/placeholder-oil.png"}
                                             alt={item.nombre}
                                             fill
-                                            className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)]"
+                                            className="object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)] mix-blend-multiply"
                                             priority={index === 0}
                                         />
                                     </div>
